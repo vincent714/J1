@@ -33,7 +33,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-chain = prompt | ChatOpenAI(api_key=openai_api_key)
+chain = prompt | ChatOpenAI(api_key=openai_api_key, model="gpt-3.5-turbo")
 
 
 # Set up langchain
