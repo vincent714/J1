@@ -15,7 +15,7 @@ with st.sidebar:
 
 
 st.title("Basic Chatbot by LangChain")
-
+st.write("for LLM conversation memory")
 
 msgs = StreamlitChatMessageHistory()
 
