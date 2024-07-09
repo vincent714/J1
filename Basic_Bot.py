@@ -10,7 +10,7 @@ with st.sidebar:
     )
     "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
 
-st.title("Another Chatbot")
+st.title("Basic Chatbot by OpenAI")
 st.caption("Powered by OpenAI's GPT-3.5 turbo.")
 st.write("https://github.com/streamlit/llm-examples")
 
