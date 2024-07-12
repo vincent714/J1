@@ -7,11 +7,14 @@ from langchain_community.chat_message_histories import StreamlitChatMessageHisto
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
-with st.sidebar:
-    openai_api_key = st.text_input(
-        "OpenAI API Key", key="chatbot_api_key", type="password"
-    )
-    "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
+if st.secrets["OPENAI_API_KEY"]:
+    openai_api_key = st.secrets["OPENAI_API_KEY"]
+else:
+    with st.sidebar:
+        openai_api_key = st.text_input(
+            "OpenAI API Key", key="chatbot_api_key", type="password"
+        )
+        "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
 
 
 st.title("Basic Chatbot by LangChain")

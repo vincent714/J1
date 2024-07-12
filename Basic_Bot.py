@@ -3,12 +3,14 @@ from openai import OpenAI
 
 st.set_page_config(page_title="Another Chatbot")
 
-
-with st.sidebar:
-    openai_api_key = st.text_input(
-        "OpenAI API Key", key="chatbot_api_key", type="password"
-    )
-    "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
+if st.secrets["OPENAI_API_KEY"]:
+    openai_api_key = st.secrets["OPENAI_API_KEY"]
+else:
+    with st.sidebar:
+        openai_api_key = st.text_input(
+            "OpenAI API Key", key="chatbot_api_key", type="password"
+        )
+        "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
 
 st.title("Basic Chatbot by OpenAI")
 st.write("https://github.com/streamlit/llm-examples")
