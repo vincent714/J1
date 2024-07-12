@@ -4,10 +4,10 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
-from langchain import hub
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
 
 if st.secrets["OPENAI_API_KEY"]:
     openai_api_key = st.secrets["OPENAI_API_KEY"]
@@ -19,7 +19,7 @@ else:
         "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
 
 
-llm = ChatOpenAI(model="gpt-3.5-turbo-0125")
+llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
 
 
 # Load, chunk and index the contents of the blog.
@@ -37,13 +37,28 @@ text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20
 splits = text_splitter.split_documents(docs)
 vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
 
-retriever = vectorstore.as_retriever()
-prompt = hub.pull("rlm/rag-prompt")
+retriever = vectorstore.as_retriever(search_kwargs={"k": 1})
 
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
+
+template = """
+Based on the input language, the response will also be in the same language.
+
+You are an assistant for question-answering tasks. 
+Use the following pieces of retrieved context to answer the question. 
+If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
+
+Question: {question} 
+
+Context: {context} 
+
+Answer:
+"""
+
+prompt = ChatPromptTemplate.from_template(template)
 
 rag_chain = (
     {"context": retriever | format_docs, "question": RunnablePassthrough()}
