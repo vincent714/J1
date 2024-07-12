@@ -9,6 +9,10 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 
+st.title("Web Q&A")
+st.write("For https://lilianweng.github.io/posts/2023-06-23-agent/")
+st.write("Only respond to content related to that URL.")
+
 if st.secrets["OPENAI_API_KEY"]:
     openai_api_key = st.secrets["OPENAI_API_KEY"]
 else:
