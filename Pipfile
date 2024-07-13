@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+ipykernel = "*"
 
 [requires]
 python_version = "3.11"
@@ -18,3 +19,7 @@ langchain-community = "*"
 beautifulsoup4 = "*"
 langchain-chroma = "*"
 langchainhub = "*"
+pyktok = "*"
+browser-cookie3 = "*"
+tiktokapi = "*"
+openai-whisper = "*"
