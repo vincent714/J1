@@ -1,2 +1,6 @@
 *.ipynb
 .streamlit/secrets.toml
+*.mp3
+*.mp4
+chroma.db
+*.txt
