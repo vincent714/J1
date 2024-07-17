@@ -12,4 +12,5 @@ Provide various tool pages for testing purposes first:
 
 - [x] Chatbot by using OpenAI APIs
 - [x] Chatbot by using Langchain
-- [ ] A tool page for saving TikTok video-to-text data to a vector database
+- [x] A tool page for saving TikTok video-to-text data to a vector database
+- [ ] Chatbot with a basic RAG strategy
