@@ -7,6 +7,7 @@ from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
+import chromadb
 
 
 st.set_page_config(
@@ -16,9 +17,7 @@ st.set_page_config(
     layout="wide",
 )
 
-
-"st.session_state object", st.session_state
-
+# "st.session_state object", st.session_state
 
 if "text" not in st.session_state:
     st.session_state.text = ""
@@ -107,40 +106,36 @@ if st.session_state.show_modify_form:
     if submit_modified_text:
         tiktok_id = st.session_state.tiktok_id
 
+        persistent_client = chromadb.PersistentClient(path="chroma.db")
+
+        langchain_chroma = Chroma(
+            client=persistent_client,
+            collection_name="child_edu",
+            embedding_function=OpenAIEmbeddings(),
+        )
+
         with st.status("Saving modified text to the vectorstore...", expanded=True):
-            st.write(f"Saved modified text to {tiktok_id}.txt...")
-            # save text to file (using utf-8 encoding)
-            with open(f"{tiktok_id}.txt", "w", encoding="utf-8") as file:
-                file.write(modified_text)
-
-            st.write("Load the text...")
-            loader = TextLoader(f"{tiktok_id}.txt")
-            documents = loader.load()
-
             st.write("Split the text...")
             text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=1000, chunk_overlap=200
+                chunk_size=500, chunk_overlap=50
             )
-            docs = text_splitter.split_documents(documents)
+            texts = text_splitter.split_text(modified_text)
+
+            # create metadatas
+            st.write("Create metadata...")
+            metadata = {
+                "source": "tiktok",
+                "video_id": tiktok_id,
+            }
+            # create a metadata array with the same length as the text.
+            metadatas = [metadata] * len(texts)
 
             st.write("Embed the text...")
             st.write("Save embeddings to the Chroma database...")
             # save to chroma database
-            Chroma.from_documents(
-                docs,
-                collection_name="child_edu",
-                embedding=OpenAIEmbeddings(),
-                persist_directory="chroma.db",
-            )
-
-            # if modified_text.txt exists, remove it (from the root directory)
-            st.write("Remove the modified text file...")
-            if os.path.exists(f"{tiktok_id}.txt") and submit_modified_text:
-                os.remove(f"{tiktok_id}.txt")
+            langchain_chroma.add_texts(texts, metadatas=metadatas)
 
             # clear the session
             st.write("Clear the session state...")
             for key in st.session_state.keys():
                 del st.session_state[key]
-
-            st.session_state
