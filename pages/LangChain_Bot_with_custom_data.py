@@ -32,7 +32,9 @@ if not openai_api_key:
 
 
 vectorstore = Chroma(
-    persist_directory="chroma.db", embedding_function=OpenAIEmbeddings()
+    persist_directory="chroma.db",
+    collection_name="child_edu",
+    embedding_function=OpenAIEmbeddings(),
 )
 retriever = vectorstore.as_retriever()
 
