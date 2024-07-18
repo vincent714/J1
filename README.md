@@ -14,3 +14,25 @@ Provide various tool pages for testing purposes first:
 - [x] Chatbot by using Langchain
 - [x] A tool page for saving TikTok video-to-text data to a vector database
 - [ ] Chatbot with a basic RAG strategy
+
+## Development
+
+Make sure you've install pipenv first:
+
+```console
+$ pip install --user pipenv
+```
+
+Then:
+
+```console
+$ git clone https://github.com/vincent714/J1.git
+
+$ cd J1
+
+$ pipenv install
+
+$ pipenv shell
+
+$ streamlit run ./Basic_Bot.py
+```
