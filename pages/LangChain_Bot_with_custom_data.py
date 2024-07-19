@@ -1,14 +1,10 @@
-import uuid
 import streamlit as st
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
-from langchain_core.chat_history import BaseChatMessageHistory
-from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.runnables import RunnablePassthrough
+from langchain import hub
+from langchain_core.output_parsers import StrOutputParser
 
 if st.secrets["OPENAI_API_KEY"]:
     openai_api_key = st.secrets["OPENAI_API_KEY"]
@@ -21,9 +17,9 @@ else:
 
 
 st.title("Chatbot with custom tiktok data")
-st.write("for LLM conversation memory")
-
-msgs = StreamlitChatMessageHistory()
+st.write(
+    "You can only ask questions related to child education; for other questions, the AI will respond by saying it doesn't know."
+)
 
 # Get an OpenAI API key before starting
 if not openai_api_key:
@@ -38,23 +34,9 @@ vectorstore = Chroma(
 )
 retriever = vectorstore.as_retriever()
 
-system_prompt = """
-Based on the input language, the response will also be in the same language.
+prompt = hub.pull("rlm/rag-prompt")
 
-You are an assistant for question-answering tasks. 
-Use the following pieces of retrieved context to answer the question. 
-If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
-
-Context: {context} 
-
-"""
-
-prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", system_prompt),
-        ("human", "{question}"),
-    ]
-)
+llm = ChatOpenAI(api_key=openai_api_key, model="gpt-3.5-turbo", temperature=0)
 
 
 # post processing
@@ -65,25 +47,12 @@ def format_docs(docs):
 chain = (
     {"context": retriever | format_docs, "question": RunnablePassthrough()}
     | prompt
-    | ChatOpenAI(api_key=openai_api_key, model="gpt-3.5-turbo")
+    | llm
+    | StrOutputParser()
 )
-
-
-# Set up langchain
-chain_with_history = RunnableWithMessageHistory(
-    chain,
-    lambda session_id: msgs,
-    input_messages_key="question",
-    history_messages_key="history",
-)
-
-# Render current messages from StreamlitChatMessageHistory
-for msg in msgs.messages:
-    st.chat_message(msg.type).write(msg.content)
 
 # If user inputs a new prompt, generate and draw a new response
 if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
-    config = {"configurable": {"session_id": "any"}}
     response = chain.invoke(prompt)
-    st.chat_message("ai").write(response.content)
+    st.chat_message("ai").write(response)
