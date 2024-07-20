@@ -39,7 +39,7 @@ tiktok_url = tiktok_form.text_input(
 whisper_model_size = tiktok_form.selectbox(
     "Whisper Model Size (Large means Multilingual model)",
     ("tiny", "base", "small", "medium", "large"),
-    index=1,
+    index=4,
     key="whisper_model_size",
 )
 del_downloaded_mp3 = tiktok_form.checkbox(
