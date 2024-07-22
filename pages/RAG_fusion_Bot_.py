@@ -80,6 +80,9 @@ template = """Answer the following question based on this context:
 {context}
 
 Question: {question}
+
+The language of the question must match the input question. For example, if the question is asked in Chinese, 
+the answer should also be in Chinese. \n
 """
 
 prompt = ChatPromptTemplate.from_template(template)
