@@ -29,6 +29,14 @@ if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.")
     st.stop()
 
+# Initialize chat history
+if "messages_4" not in st.session_state:
+    st.session_state.messages_4 = []
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages_4:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
 vectorstore = Chroma(
     persist_directory="chroma.db",
@@ -64,6 +72,9 @@ final_rag_chain = prompt | llm | StrOutputParser()
 # If user inputs a new prompt, generate and draw a new response
 if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
+    st.session_state.messages_4.append({"role": "user", "content": prompt})
+
     retireved_docs = retrieval_chain.invoke({"question": prompt})
     results = final_rag_chain.invoke({"context": retireved_docs, "question": prompt})
     st.chat_message("bot").write(results)
+    st.session_state.messages_4.append({"role": "ai", "content": results})
