@@ -27,6 +27,16 @@ if not openai_api_key:
     st.stop()
 
 
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+
 vectorstore = Chroma(
     persist_directory="chroma.db",
     collection_name="child_edu",
@@ -54,5 +64,8 @@ chain = (
 # If user inputs a new prompt, generate and draw a new response
 if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
     response = chain.invoke(prompt)
     st.chat_message("ai").write(response)
+    st.session_state.messages.append({"role": "ai", "content": response})
