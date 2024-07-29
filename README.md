@@ -15,7 +15,8 @@ Provide various tool pages for testing purposes first:
 - [x] A tool page for saving TikTok video-to-text data to a vector database
 - [x] Chatbot with a basic RAG strategy
 - [x] Chatbot based on RAG-fusion strategy
-- [ ] Chatbot based on Decomposition strategy
+- [x] Chatbot based on Decomposition strategy
+- [x] Chatbot based on HyDE strategy
 
 ## Development
 
@@ -36,5 +37,5 @@ $ pipenv install
 
 $ pipenv shell
 
-$ streamlit run ./Basic_Bot.py
+$ streamlit run ./OpenAI_Bot.py
 ```
