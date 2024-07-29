@@ -17,8 +17,8 @@ else:
         "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
 
 
-st.title("Basic Chatbot by LangChain")
-st.write("for LLM conversation memory")
+st.title("LangChain Chatbot")
+st.write("with LLM conversation memory")
 
 msgs = StreamlitChatMessageHistory()
 

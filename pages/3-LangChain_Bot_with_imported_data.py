@@ -16,7 +16,7 @@ else:
         "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
 
 
-st.title("Chatbot with custom tiktok data")
+st.title("Chatbot with imported data")
 st.write(
     "You can only ask questions related to child education; for other questions, the AI will respond by saying it doesn't know."
 )

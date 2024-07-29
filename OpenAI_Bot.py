@@ -1,7 +1,7 @@
 import streamlit as st
 from openai import OpenAI
 
-st.set_page_config(page_title="Another Chatbot")
+st.set_page_config(page_title="OpenAI Chatbot")
 
 if st.secrets["OPENAI_API_KEY"]:
     openai_api_key = st.secrets["OPENAI_API_KEY"]
