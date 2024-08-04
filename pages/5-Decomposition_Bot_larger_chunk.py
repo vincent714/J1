@@ -19,7 +19,7 @@ else:
         "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
 
 
-st.title("Decomposition Chatbot")
+st.title("Decomposition Chatbot  (larger chunk)")
 st.write(
     "You can only ask questions related to child education; for other questions, the AI will respond by saying it doesn't know."
 )
@@ -30,19 +30,21 @@ if not openai_api_key:
     st.stop()
 
 # Initialize chat history
-if "messages_3" not in st.session_state:
-    st.session_state.messages_3 = []
+if "messages_3_larger" not in st.session_state:
+    st.session_state.messages_3_larger = []
 
 # Display chat messages from history on app rerun
-for message in st.session_state.messages_3:
+for message in st.session_state.messages_3_larger:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
 
+collection_name = st.secrets.get("CHROMA_COLLECTION_NAME", "child_edu")
+emdedding_model = st.secrets.get("CHROMA_EMBEDDING_MODEL", "text-embedding-ada-002")
 vectorstore = Chroma(
     persist_directory="chroma.db",
-    collection_name="child_edu",
-    embedding_function=OpenAIEmbeddings(),
+    collection_name=collection_name,
+    embedding_function=OpenAIEmbeddings(model=emdedding_model),
 )
 retriever = vectorstore.as_retriever()
 
