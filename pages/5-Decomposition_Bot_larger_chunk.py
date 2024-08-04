@@ -123,12 +123,12 @@ def get_final_answer(questions: list[str]):
 # If user inputs a new prompt, generate and draw a new response
 if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
-    st.session_state.messages_3.append({"role": "user", "content": prompt})
+    st.session_state.messages_3_larger.append({"role": "user", "content": prompt})
 
     questions = decompose(prompt)
     st.chat_message("ai").write(questions)
-    st.session_state.messages_3.append({"role": "ai", "content": questions})
+    st.session_state.messages_3_larger.append({"role": "ai", "content": questions})
 
     answer = get_final_answer(questions)
     st.chat_message("ai").write(answer)
-    st.session_state.messages_3.append({"role": "ai", "content": answer})
+    st.session_state.messages_3_larger.append({"role": "ai", "content": answer})
